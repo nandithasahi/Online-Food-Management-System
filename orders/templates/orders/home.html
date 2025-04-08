@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+    <style>
+        body {
+            background-image: url("{% static 'images/food.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-box {
+            background-color: rgba(255, 255, 255, 0.9); /* white with slight transparency */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            color: #800080; /* purple links */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            display: inline-block;
+            margin-top: 20px;
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-box">
+        <h2>Welcome, {{ user.username }}!</h2>
+        <p>Choose a restaurant to view the menu:</p>
+
+        <ul>
+            {% for restaurant in restaurants %}
+                <li>
+                    <a href="{% url 'restaurant_menu' restaurant.restaurant_id %}">{{ restaurant.res_name }}</a>
+                    <p>{{ restaurant.res_address }}</p>
+                </li>
+            {% empty %}
+                <p>No restaurants available.</p>
+            {% endfor %}
+        </ul>
+
+        <a class="logout" href="{% url 'logout' %}">Logout</a>
+    </div>
+</body>
+</html>

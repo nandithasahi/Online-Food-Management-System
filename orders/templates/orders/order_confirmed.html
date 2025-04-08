@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delivery Details</title>
+    <style>
+        body {
+            background: url("{% static 'images/food4.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .delivery-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        strong {
+            color: #000;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="delivery-container">
+        <h2>Delivery Details</h2>
+
+        {% if delivery %}
+            <p><strong>Delivery Assigned:</strong> Yes</p>
+
+            {% if delivery.delivery_person %}
+                <p><strong>Delivery Person:</strong> {{ delivery.delivery_person.name }} ({{ delivery.delivery_person.phone_number }})</p>
+            {% else %}
+                <p><strong>Delivery Person:</strong> Not Assigned</p>
+            {% endif %}
+
+            <p><strong>Status:</strong> {{ delivery.status }}</p>
+
+            {% if delivery.status != "Delivered" %}
+                <form method="post" action="{% url 'order_delivered' delivery.order.order_id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="mark_delivered" value="1">
+                    <button type="submit">Mark as Delivered</button>
+                </form>
+            {% else %}
+                <p><strong>The order has already been delivered.</strong></p>
+            {% endif %}
+        {% else %}
+            <p><strong>No Delivery Entry Found.</strong></p>
+        {% endif %}
+    </div>
+</body>
+</html>

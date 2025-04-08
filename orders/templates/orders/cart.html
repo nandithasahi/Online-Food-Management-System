@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url("{% static 'images/food3.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+
+        .cart-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+            border: 2px solid #fff;
+        }
+
+        h1, h3 {
+            text-align: center;
+            color: #ffd700;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        form {
+            display: inline;
+        }
+
+        button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #ffa500;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff8c00;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+
+        {% if cart_items %}
+            <ul>
+                {% for item in cart_items %}
+                    <li>
+                        <strong>{{ item.item.item_name }}</strong> - 
+                        ₹{{ item.item.item_price }} x {{ item.quantity }}
+
+                        <form method="POST" action="{% url 'update_cart' item.cartitem_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="increase">
+                            <button type="submit">+</button>
+                        </form>
+
+                        <form method="POST" action="{% url 'update_cart' item.cartitem_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="decrease">
+                            <button type="submit">-</button>
+                        </form>
+
+                        <form method="POST" action="{% url 'update_cart' item.cartitem_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove">
+                            <button type="submit" style="background-color: red;">Remove</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Total Price: ₹{{ total_price|floatformat:2 }}</h3>
+            <a href="{% url 'checkout' %}">Proceed to Checkout</a>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'home' %}">Back to Restaurants</a>
+    </div>
+</body>
+</html>
